@@ -4,6 +4,8 @@
 EMAIL_HOST_PASSWORD = 'your_password' (здесь укажите свой пароль)
 EMAIL_HOST_USER = 'your_email' (здесь укажите свой gmail)
 
+После loaddata в приложении уже булут 2 пользователя для входа, 1) username: admin, password : admin 2) username : user, password : user
+
 
 1) git clone https://github.com/alisher1989/test_project.git
 
