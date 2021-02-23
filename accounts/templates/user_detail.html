@@ -1,0 +1,271 @@
+{% extends 'base.html' %}
+
+{% block title %}Пользователь{% endblock %}
+
+{% block menu %}
+    {% if user.pk == user_obj.pk %}
+        <li class="nav-item"><a class="nav-link" href="{% url "accounts:password_change" user_obj.pk %}">Смена
+            пароля</a></li>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <h1 class="text-center">Личный кабинет</h1>
+    <div class="row">
+        <div class="col col-12 col-sm-10 col-md-8 col-lg-6 m-auto">
+            {% if user_obj.profile.avatar %}
+                <img src="{{ user_obj.profile.avatar.url }}" class="img-fluid" alt="{{ user_obj.username }}">
+            {% endif %}
+            <div class="mt-lg-3">
+                <p><b>Имя пользователя:</b> <i id="username_p">{{ user_obj.username }}</i>
+                    <button href="" style="margin-left: 10px; border-radius: 3px;"
+                            onclick="myUsernameDiv()">
+                        <i data-toggle="tooltip" data-placement="top"
+                           title="Редактировать" id="username_cancel">edit</i>
+                    </button>
+                </p>
+                <div class="form-group" id="username_div" style="display: none">
+                    <div class="col-xs-4">
+                        <input class="form-control" id="username" type="text" name="username" height="15px">
+                    </div>
+                    <button type="submit" style="margin-top: 10px" class="btn btn-primary"
+                            onclick="editUsername(event, {{ user_obj.pk }})">
+                        Submit
+                    </button>
+                    <span id="user_span" style="margin-left: 20px; color: red"></span>
+                    <span id="user_span_success" style="margin-left: 20px; color: green"></span>
+                </div>
+
+                <p><b>Имя:</b> <i id="first_name_p">{{ user_obj.first_name }}</i>
+                    <button href="" style="margin-left: 10px; border-radius: 3px;"
+                            onclick="myFirstNameDiv()">
+                        <i data-toggle="tooltip" data-placement="top"
+                           title="Редактировать" id="first_name_cancel">edit</i>
+                        </i>
+                    </button>
+                </p>
+                <div class="form-group" id="first_name_div" style="display: none">
+                    <div class="col-xs-4">
+                        <input class="form-control" id="first_name" type="text" name="first_name" height="15px">
+                    </div>
+                    <button type="submit" style="margin-top: 10px" class="btn btn-primary"
+                            onclick="firstNameEdit(event, {{ user_obj.pk }})">
+                        Submit
+                    </button>
+                    <span id="first_name_span_success" style="margin-left: 20px; color: green"></span>
+                </div>
+                <p><b>Фамилия:</b> <i id="last_name_p">{{ user_obj.last_name }}</i>
+                    <button href="" style="margin-left: 10px; border-radius: 3px;"
+                            onclick="myLastNameDiv()">
+                        <i data-toggle="tooltip" data-placement="top"
+                           title="Редактировать" id="last_name_cancel">edit
+                        </i>
+                    </button>
+                </p>
+                <div class="form-group" id="last_name_div" style="display: none">
+                    <div class="col-xs-4">
+                        <input class="form-control" id="last_name" type="text" name="last_name" height="15px">
+                    </div>
+                    <button type="submit" style="margin-top: 10px" class="btn btn-primary"
+                            onclick="lastNameEdit(event, {{ user_obj.pk }})">
+                        Submit
+                    </button>
+                    <span id="last_name_span_success" style="margin-left: 20px; color: green"></span>
+                </div>
+                <p><b>Почта:</b> <i id="email_p">{{ user_obj.email }}</i>
+                    <button href="" style="margin-left: 10px; border-radius: 3px"
+                            onclick="myEmailDiv()">
+                        <i data-toggle="tooltip" data-placement="top"
+                           title="Редактировать" id="email_cancel">edit</i>
+                    </button>
+                </p>
+                <div class="form-group" id="email_div" style="display: none">
+                    <div class="col-xs-4">
+                        <input class="form-control" id="email" type="text" name="email" height="15px">
+                    </div>
+                    <button type="submit" style="margin-top: 10px" class="btn btn-primary"
+                            onclick="commentRatingUp(event, {{ user_obj.pk }})">
+                        Submit
+                    </button>
+                    <span id="email_span" style="margin-left: 20px; color: red"></span>
+                    <span id="email_span_success" style="margin-left: 20px; color: green"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        function editUsername(event, pk) {
+            event.preventDefault();
+            let csrftoken = getCookie('csrftoken');
+            let data = {
+                'user_id': pk,
+                'username': $('#username').val(),
+            };
+            console.log(data);
+            $.ajax({
+                url: '/username/',
+                method: 'post',
+                data: data,
+                dataType: 'json',
+                headers: {
+                    "X-CSRFToken": csrftoken
+                },
+                success: function (data) {
+                    $('#username_p').text(data['username']);
+                    if (data['status'] !== 'error') {
+                        $('#user_span_success').text(data['status']);
+                        $("#user_span_success").hide().slideDown().delay(1500).fadeOut();
+                    }
+                    if (data['status'] === 'error') {
+                        $('#user_span').text(data['error']);
+                        $("#user_span").hide().slideDown().delay(1500).fadeOut();
+                    }
+                }
+            });
+        }
+
+        function commentRatingUp(event, pk) {
+            event.preventDefault();
+            let csrftoken = getCookie('csrftoken');
+            let data = {
+                'user_id': pk,
+                'email': $('#email').val(),
+            };
+            $.ajax({
+                url: '/email/',
+                method: 'post',
+                data: data,
+                dataType: 'json',
+                headers: {
+                    "X-CSRFToken": csrftoken
+                },
+                success: function (data) {
+                    if (data['status'] === 'email is not valid') {
+                        $('#email_span').text(data['status']);
+                        $("#email_span").hide().slideDown().delay(1500).fadeOut();
+                    }
+                    if (data['status'] !== 'email is not valid') {
+                        $('#email_p').text(data['email']);
+                        $('#email_span_success').text(data['status']);
+                        $("#email_span_success").hide().slideDown().delay(1500).fadeOut();
+                    }
+                }
+            });
+        }
+
+        function firstNameEdit(event, pk) {
+            event.preventDefault();
+            let csrftoken = getCookie('csrftoken');
+            let data = {
+                'user_id': pk,
+                'first_name': $('#first_name').val(),
+            };
+            $.ajax({
+                url: '/first_name_edit/',
+                method: 'post',
+                data: data,
+                dataType: 'json',
+                headers: {
+                    "X-CSRFToken": csrftoken
+                },
+                success: function (data) {
+                    console.log(data);
+                    $('#first_name_p').text(data['first_name']);
+                    $('#first_name_span_success').text(data['status']);
+                    $("#first_name_span_success").hide().slideDown().delay(1500).fadeOut();
+                }
+            });
+        }
+
+        function lastNameEdit(event, pk) {
+            event.preventDefault();
+            let csrftoken = getCookie('csrftoken');
+            let data = {
+                'user_id': pk,
+                'last_name': $('#last_name').val(),
+            };
+            $.ajax({
+                url: '/last_name_edit/',
+                method: 'post',
+                data: data,
+                dataType: 'json',
+                headers: {
+                    "X-CSRFToken": csrftoken
+                },
+                success: function (data) {
+                    console.log(data);
+                    $('#last_name_p').text(data['last_name']);
+                    $('#last_name_span_success').text(data['status']);
+                    $("#last_name_span_success").hide().slideDown().delay(1500).fadeOut();
+                }
+            });
+        }
+
+        function myUsernameDiv() {
+            var x = document.getElementById("username_div");
+            var username_cancel = document.getElementById("username_cancel");
+            if (x.style.display === "none") {
+                x.style.display = "block";
+                username_cancel.innerText = 'hide form'
+            } else {
+                x.style.display = "none";
+                username_cancel.innerText = 'edit'
+            }
+        }
+
+        function myFirstNameDiv() {
+            var x = document.getElementById("first_name_div");
+            var first_name_cancel = document.getElementById("first_name_cancel");
+            if (x.style.display === "none") {
+                x.style.display = "block";
+                first_name_cancel.innerText = 'hide form'
+            } else {
+                x.style.display = "none";
+                first_name_cancel.innerText = 'edit'
+            }
+        }
+
+        function myLastNameDiv() {
+            var x = document.getElementById("last_name_div");
+            var last_name_cancel = document.getElementById("last_name_cancel");
+            if (x.style.display === "none") {
+                x.style.display = "block";
+                last_name_cancel.innerText = 'hide form'
+            } else {
+                x.style.display = "none";
+                last_name_cancel.innerText = 'edit'
+            }
+        }
+
+        function myEmailDiv() {
+            var x = document.getElementById("email_div");
+            var email_cancel = document.getElementById("email_cancel");
+            if (x.style.display === "none") {
+                x.style.display = "block";
+                email_cancel.innerText = 'hide form'
+            } else {
+                x.style.display = "none";
+                email_cancel.innerText = 'edit'
+            }
+        }
+    </script>
+{% endblock %}
