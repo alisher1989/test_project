@@ -14,7 +14,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.views import View
 from django.views.generic import DetailView, UpdateView
 from django.contrib.auth.models import User
-from .forms import UserCreationForm, UserChangeForm, PasswordChangeForm
+from .forms import UserCreationForm, PasswordChangeForm
 import re
 
 
@@ -91,19 +91,6 @@ class UserDetailView(DetailView):
     model = User
     template_name = 'user_detail.html'
     context_object_name = 'user_obj'
-
-
-class UserPersonalInfoChangeView(UserPassesTestMixin, UpdateView):
-    model = User
-    template_name = 'user_info_change.html'
-    form_class = UserChangeForm
-    context_object_name = 'user_obj'
-
-    def test_func(self):
-        return self.request.user.pk == self.kwargs['pk']
-
-    def get_success_url(self):
-        return reverse('accounts:detail', kwargs={'pk': self.object.pk})
 
 
 class UserPasswordChangeView(UserPassesTestMixin, UpdateView):
