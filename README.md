@@ -29,7 +29,11 @@
 
 8) ./manage.py migrate
 
-9) ./manage.py runserver
+9) ./manage.py loaddata fixtures/auth.json 
+
+10) ./manage.py loaddata fixtures/dump.json  
+
+11) ./manage.py runserver
 
 
                     API ENDPOINTS
