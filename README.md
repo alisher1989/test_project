@@ -1,5 +1,9 @@
 # test_project
 
+В settings.py 
+EMAIL_HOST_PASSWORD = 'your_password' (здесь укажите свой пароль)
+EMAIL_HOST_USER = 'your_email' (здесь укажите свой gmail)
+
 
 1) git clone https://github.com/alisher1989/test_project.git
 
