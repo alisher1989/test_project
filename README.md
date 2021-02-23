@@ -14,17 +14,18 @@
 6) pip install -r req.txt
 
 7) sudo -u postgres psql
-      postgres=# CREATE DATABASE test_project;
-      CREATE DATABASE
-      postgres=# CREATE USER test_user WITH PASSWORD 'test_password';
-      CREATE ROLE
-      postgres=# ALTER ROLE test_user SET client_encoding TO 'utf8';
-      ALTER ROLE
-      postgres=# ALTER ROLE test_user SET timezone TO 'UTC';
-      ALTER ROLE
-      postgres=# GRANT ALL PRIVILEGES ON DATABASE test_project TO test_user;
-      GRANT
-      postgres=# \q
+
+      * CREATE DATABASE test_project;
+
+      * CREATE USER test_user WITH PASSWORD 'test_password';
+
+      * ALTER ROLE test_user SET client_encoding TO 'utf8';
+      
+      * ALTER ROLE test_user SET timezone TO 'UTC';
+      
+      * GRANT ALL PRIVILEGES ON DATABASE test_project TO test_user;
+      
+      * \q
 
 8) ./manage.py migrate
 
